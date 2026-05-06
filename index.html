@@ -13,6 +13,7 @@
   --rust: #b5451b;
   --gold: #c9952a;
   --green: #3d7a3d;
+  --blue: #2a5c8a;
   --muted: #7a6e5f;
   --border: #d4c9b0;
 }
@@ -27,6 +28,7 @@ body {
   padding-bottom: 100px;
 }
 
+/* ===== HEADER ===== */
 header {
   background: var(--ink);
   color: var(--paper);
@@ -39,19 +41,40 @@ header {
   top: 0;
   z-index: 100;
 }
+header h1 { font-family: 'Playfair Display', serif; font-size: 1.35rem; font-weight: 900; }
+header span { font-size: 0.78rem; color: #998; font-style: italic; }
 
-header h1 {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.35rem;
-  font-weight: 900;
+/* ===== PAGE TABS ===== */
+.page-tabs {
+  display: flex;
+  background: var(--ink);
+  border-bottom: 3px solid var(--rust);
+  position: sticky;
+  top: 55px;
+  z-index: 99;
 }
-
-header span {
-  font-size: 0.78rem;
-  color: #998;
-  font-style: italic;
+.page-tab {
+  flex: 1;
+  background: none;
+  border: none;
+  padding: 10px 4px;
+  font-size: 0.72rem;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: #666;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -3px;
 }
+.page-tab.active { color: var(--paper); border-bottom-color: var(--gold); }
 
+/* ===== PAGE SECTIONS ===== */
+.page { display: none; }
+.page.active { display: block; }
+
+/* ===== ALERT ===== */
 .alert-bar {
   background: var(--rust);
   color: white;
@@ -63,46 +86,27 @@ header span {
 }
 .alert-bar.show { display: block; }
 
+/* ===== STATS ===== */
 .stats {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   background: white;
   border-bottom: 1px solid var(--border);
 }
-
-.stat {
-  text-align: center;
-  padding: 14px 8px;
-  border-right: 1px solid var(--border);
-}
+.stat { text-align: center; padding: 14px 8px; border-right: 1px solid var(--border); }
 .stat:last-child { border-right: none; }
-
-.stat-num {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.8rem;
-  font-weight: 700;
-  line-height: 1;
-}
+.stat-num { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 700; line-height: 1; }
 .stat-num.warn { color: var(--rust); }
 .stat-num.ok { color: var(--green); }
+.stat-num.blue { color: var(--blue); }
+.stat-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); margin-top: 2px; }
 
-.stat-label {
-  font-size: 0.65rem;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  color: var(--muted);
-  margin-top: 2px;
-}
-
+/* ===== FILTER TABS ===== */
 .filter-tabs {
   display: flex;
   border-bottom: 2px solid var(--ink);
   background: var(--paper);
-  position: sticky;
-  top: 59px;
-  z-index: 99;
 }
-
 .tab {
   flex: 1;
   background: none;
@@ -120,161 +124,106 @@ header span {
 }
 .tab.active { color: var(--ink); border-bottom-color: var(--rust); }
 
-.editions {
-  padding: 12px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.edition-card {
-  background: white;
-  border: 1px solid var(--border);
-  overflow: hidden;
-}
+/* ===== EDITION CARDS ===== */
+.editions { padding: 12px 16px; display: flex; flex-direction: column; gap: 10px; }
+.edition-card { background: white; border: 1px solid var(--border); overflow: hidden; }
 .edition-card.unread { border-left: 4px solid var(--rust); }
 .edition-card.read { border-left: 4px solid var(--green); }
-
-.card-main {
-  display: flex;
-  align-items: stretch;
-}
-
+.card-main { display: flex; align-items: stretch; }
 .date-block {
-  text-align: center;
-  padding: 14px 10px;
-  min-width: 56px;
-  background: var(--aged);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
+  text-align: center; padding: 14px 10px; min-width: 56px;
+  background: var(--aged); display: flex; flex-direction: column;
+  align-items: center; justify-content: center; flex-shrink: 0;
 }
-
-.date-day {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.6rem;
-  font-weight: 700;
-  line-height: 1;
-}
-
-.date-month {
-  font-size: 0.6rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: var(--muted);
-}
-
+.date-day { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; line-height: 1; }
+.date-month { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
 .date-year { font-size: 0.58rem; color: var(--muted); }
+.card-body { flex: 1; padding: 12px 14px; min-width: 0; }
+.edition-title { font-family: 'Playfair Display', serif; font-size: 0.95rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.edition-meta { font-size: 0.7rem; color: var(--muted); font-style: italic; margin: 3px 0 7px; }
+.days-badge { display: inline-block; font-size: 0.63rem; padding: 2px 8px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
+.days-badge.urgent { background: var(--rust); color: white; }
+.days-badge.warning { background: var(--gold); color: white; }
+.days-badge.fresh { background: var(--green); color: white; }
+.days-badge.done { background: #ddd; color: #888; }
+.memo-section { border-top: 1px solid var(--border); padding: 10px 14px; cursor: pointer; }
+.memo-text { font-size: 0.83rem; color: var(--muted); font-style: italic; line-height: 1.5; }
+.memo-empty { font-size: 0.76rem; color: #bbb; }
+.memo-input-wrap { display: none; margin-top: 8px; }
+.memo-input-wrap.show { display: block; }
+.memo-input-wrap textarea {
+  width: 100%; min-height: 64px; border: 1px solid var(--border);
+  background: var(--paper); padding: 8px 10px; font-family: inherit;
+  font-size: 0.88rem; color: var(--ink); outline: none; resize: vertical;
+}
+.memo-input-wrap textarea:focus { border-color: var(--rust); }
+.btn-save-memo {
+  display: block; width: 100%; margin-top: 6px; padding: 10px;
+  background: var(--gold); color: white; border: none;
+  font-family: inherit; font-size: 0.82rem; font-weight: 700; cursor: pointer;
+}
+.card-actions { display: flex; border-top: 1px solid var(--border); }
+.card-actions button {
+  flex: 1; padding: 12px 4px; font-family: inherit; font-size: 0.72rem;
+  font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;
+  border: none; border-right: 1px solid var(--border); cursor: pointer;
+  background: none; color: var(--muted);
+}
+.card-actions button:last-child { border-right: none; }
+.btn-read-action { background: var(--green) !important; color: white !important; }
+.btn-delete-action { color: #ccc !important; }
+.btn-delete-action:active { color: var(--rust) !important; }
 
-.card-body {
+/* ===== VOCAB SECTION ===== */
+.vocab-list { padding: 12px 16px; display: flex; flex-direction: column; gap: 8px; }
+
+.vocab-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--blue);
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.vocab-body {
   flex: 1;
   padding: 12px 14px;
   min-width: 0;
 }
 
-.edition-title {
+.vocab-en {
   font-family: 'Playfair Display', serif;
-  font-size: 0.95rem;
+  font-size: 1.05rem;
   font-weight: 700;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.edition-meta {
-  font-size: 0.7rem;
-  color: var(--muted);
-  font-style: italic;
-  margin: 3px 0 7px;
-}
-
-.days-badge {
-  display: inline-block;
-  font-size: 0.63rem;
-  padding: 2px 8px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-}
-.days-badge.urgent { background: var(--rust); color: white; }
-.days-badge.warning { background: var(--gold); color: white; }
-.days-badge.fresh { background: var(--green); color: white; }
-.days-badge.done { background: #ddd; color: #888; }
-
-.memo-section {
-  border-top: 1px solid var(--border);
-  padding: 10px 14px;
-  cursor: pointer;
-}
-
-.memo-text {
-  font-size: 0.83rem;
-  color: var(--muted);
-  font-style: italic;
-  line-height: 1.5;
-}
-
-.memo-empty { font-size: 0.76rem; color: #bbb; }
-
-.memo-input-wrap { display: none; margin-top: 8px; }
-.memo-input-wrap.show { display: block; }
-
-.memo-input-wrap textarea {
-  width: 100%;
-  min-height: 64px;
-  border: 1px solid var(--border);
-  background: var(--paper);
-  padding: 8px 10px;
-  font-family: inherit;
-  font-size: 0.88rem;
   color: var(--ink);
-  outline: none;
-  resize: vertical;
-}
-.memo-input-wrap textarea:focus { border-color: var(--rust); }
-
-.btn-save-memo {
-  display: block;
-  width: 100%;
-  margin-top: 6px;
-  padding: 10px;
-  background: var(--gold);
-  color: white;
-  border: none;
-  font-family: inherit;
-  font-size: 0.82rem;
-  font-weight: 700;
-  cursor: pointer;
-  letter-spacing: 0.5px;
 }
 
-.card-actions {
-  display: flex;
-  border-top: 1px solid var(--border);
-}
-
-.card-actions button {
-  flex: 1;
-  padding: 12px 4px;
-  font-family: inherit;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  border: none;
-  border-right: 1px solid var(--border);
-  cursor: pointer;
-  background: none;
+.vocab-ja {
+  font-size: 0.85rem;
   color: var(--muted);
+  margin-top: 3px;
+  font-style: italic;
 }
-.card-actions button:last-child { border-right: none; }
 
-.btn-read-action { background: var(--green) !important; color: white !important; }
-.btn-delete-action { color: #ccc !important; }
-.btn-delete-action:active { color: var(--rust) !important; }
+.vocab-date {
+  font-size: 0.65rem;
+  color: #bbb;
+  margin-top: 4px;
+}
 
+.vocab-del {
+  background: none;
+  border: none;
+  color: #ccc;
+  font-size: 1rem;
+  padding: 16px 14px;
+  cursor: pointer;
+  font-family: inherit;
+}
+.vocab-del:active { color: var(--rust); }
+
+/* ===== FAB ===== */
 .fab {
   position: fixed;
   bottom: 24px;
@@ -295,7 +244,9 @@ header span {
   transition: transform 0.12s;
 }
 .fab:active { transform: scale(0.91); }
+.fab.vocab-fab { background: var(--blue); }
 
+/* ===== MODAL ===== */
 .modal-overlay {
   display: none;
   position: fixed;
@@ -306,7 +257,6 @@ header span {
   justify-content: center;
 }
 .modal-overlay.show { display: flex; }
-
 .modal {
   background: var(--paper);
   width: 100%;
@@ -315,86 +265,44 @@ header span {
   border-top: 4px solid var(--rust);
   animation: slideUp 0.18s ease;
 }
-
+.modal.blue-modal { border-top-color: var(--blue); }
 @keyframes slideUp {
   from { transform: translateY(40px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.modal-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.1rem;
-  font-weight: 700;
-}
-
-.modal-close {
-  background: none;
-  border: none;
-  font-size: 1.4rem;
-  color: var(--muted);
-  cursor: pointer;
-  padding: 4px 8px;
-  line-height: 1;
-}
-
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.modal-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; }
+.modal-close { background: none; border: none; font-size: 1.4rem; color: var(--muted); cursor: pointer; padding: 4px 8px; line-height: 1; }
 .form-group { margin-bottom: 14px; }
-
-label {
-  display: block;
-  font-size: 0.68rem;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  color: var(--muted);
-  font-weight: 700;
-  margin-bottom: 6px;
-}
-
-input[type="date"],
-input[type="text"],
-.modal textarea {
-  width: 100%;
-  border: 1px solid var(--border);
-  background: white;
-  padding: 12px 14px;
-  font-family: inherit;
-  font-size: 1rem;
-  color: var(--ink);
-  outline: none;
-  -webkit-appearance: none;
-  border-radius: 1px;
+label { display: block; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); font-weight: 700; margin-bottom: 6px; }
+input[type="date"], input[type="text"], .modal textarea {
+  width: 100%; border: 1px solid var(--border); background: white;
+  padding: 12px 14px; font-family: inherit; font-size: 1rem; color: var(--ink);
+  outline: none; -webkit-appearance: none; border-radius: 1px;
 }
 input:focus, .modal textarea:focus { border-color: var(--rust); }
 .modal textarea { min-height: 80px; resize: vertical; }
-
 .btn-submit {
-  width: 100%;
-  background: var(--rust);
-  color: white;
-  border: none;
-  padding: 16px;
-  font-family: inherit;
-  font-size: 1rem;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  cursor: pointer;
-  margin-top: 6px;
+  width: 100%; background: var(--rust); color: white; border: none;
+  padding: 16px; font-family: inherit; font-size: 1rem; font-weight: 700;
+  letter-spacing: 0.5px; cursor: pointer; margin-top: 6px;
 }
 .btn-submit:active { background: #9a3c18; }
+.btn-submit.blue { background: var(--blue); }
+.btn-submit.blue:active { background: #1e4a73; }
 
-.empty-state {
-  text-align: center;
-  padding: 60px 20px;
-  color: var(--muted);
-}
+.empty-state { text-align: center; padding: 60px 20px; color: var(--muted); }
 .empty-state p { font-size: 1rem; font-style: italic; }
 .empty-state small { font-size: 0.82rem; display: block; margin-top: 6px; }
+
+/* 単語検索 */
+.vocab-search-wrap { padding: 12px 16px 0; }
+.vocab-search {
+  width: 100%; border: 1px solid var(--border); background: white;
+  padding: 10px 14px; font-family: inherit; font-size: 0.95rem; color: var(--ink);
+  outline: none; border-radius: 1px;
+}
+.vocab-search:focus { border-color: var(--blue); }
 </style>
 </head>
 <body>
@@ -404,33 +312,44 @@ input:focus, .modal textarea:focus { border-color: var(--rust); }
   <span>読まずに溜めない</span>
 </header>
 
-<div class="alert-bar" id="alertBar"></div>
-
-<div class="stats">
-  <div class="stat">
-    <div class="stat-num" id="statTotal">0</div>
-    <div class="stat-label">Total</div>
-  </div>
-  <div class="stat">
-    <div class="stat-num warn" id="statUnread">0</div>
-    <div class="stat-label">Unread</div>
-  </div>
-  <div class="stat">
-    <div class="stat-num ok" id="statRead">0</div>
-    <div class="stat-label">Read</div>
-  </div>
+<!-- ページ切り替えタブ -->
+<div class="page-tabs">
+  <button class="page-tab active" onclick="showPage('newspaper', this)">📰 新聞</button>
+  <button class="page-tab" onclick="showPage('vocab', this)">📖 単語帳</button>
 </div>
 
-<div class="filter-tabs">
-  <button class="tab active" onclick="setFilter('all',this)">All</button>
-  <button class="tab" onclick="setFilter('unread',this)">Unread</button>
-  <button class="tab" onclick="setFilter('read',this)">Read</button>
+<!-- ===== 新聞ページ ===== -->
+<div class="page active" id="page-newspaper">
+  <div class="alert-bar" id="alertBar"></div>
+  <div class="stats">
+    <div class="stat"><div class="stat-num" id="statTotal">0</div><div class="stat-label">Total</div></div>
+    <div class="stat"><div class="stat-num warn" id="statUnread">0</div><div class="stat-label">Unread</div></div>
+    <div class="stat"><div class="stat-num ok" id="statRead">0</div><div class="stat-label">Read</div></div>
+  </div>
+  <div class="filter-tabs">
+    <button class="tab active" onclick="setFilter('all',this)">All</button>
+    <button class="tab" onclick="setFilter('unread',this)">Unread</button>
+    <button class="tab" onclick="setFilter('read',this)">Read</button>
+  </div>
+  <div class="editions" id="editionsList"></div>
+  <button class="fab" onclick="openModal()">＋</button>
 </div>
 
-<div class="editions" id="editionsList"></div>
+<!-- ===== 単語帳ページ ===== -->
+<div class="page" id="page-vocab">
+  <div class="stats">
+    <div class="stat"><div class="stat-num blue" id="vocabTotal">0</div><div class="stat-label">単語数</div></div>
+    <div class="stat"><div class="stat-num" id="vocabToday">0</div><div class="stat-label">今日追加</div></div>
+    <div class="stat"><div class="stat-num" id="vocabWeek">0</div><div class="stat-label">今週追加</div></div>
+  </div>
+  <div class="vocab-search-wrap">
+    <input class="vocab-search" type="text" id="vocabSearch" placeholder="単語を検索..." oninput="renderVocab()">
+  </div>
+  <div class="vocab-list" id="vocabList"></div>
+  <button class="fab vocab-fab" onclick="openVocabModal()">＋</button>
+</div>
 
-<button class="fab" onclick="openModal()">＋</button>
-
+<!-- 新聞登録モーダル -->
 <div class="modal-overlay" id="modalOverlay" onclick="closeBg(event)">
   <div class="modal">
     <div class="modal-header">
@@ -453,13 +372,45 @@ input:focus, .modal textarea:focus { border-color: var(--rust); }
   </div>
 </div>
 
-<script>
-let editions = JSON.parse(localStorage.getItem('asahiWeekly') || '[]');
-let currentFilter = 'all';
+<!-- 単語登録モーダル -->
+<div class="modal-overlay" id="vocabModalOverlay" onclick="closeVocabBg(event)">
+  <div class="modal blue-modal">
+    <div class="modal-header">
+      <div class="modal-title">単語を追加</div>
+      <button class="modal-close" onclick="closeVocabModal()">✕</button>
+    </div>
+    <div class="form-group">
+      <label>英語</label>
+      <input type="text" id="inputEn" placeholder="例: unprecedented" autocomplete="off">
+    </div>
+    <div class="form-group">
+      <label>日本語</label>
+      <input type="text" id="inputJa" placeholder="例: 前例のない" autocomplete="off">
+    </div>
+    <button class="btn-submit blue" onclick="addVocab()">追加する</button>
+  </div>
+</div>
 
-function todayStr() {
-  return new Date().toISOString().split('T')[0];
+<script>
+// ===== データ =====
+let editions = JSON.parse(localStorage.getItem('asahiWeekly') || '[]');
+let vocab = JSON.parse(localStorage.getItem('asahiVocab') || '[]');
+let currentFilter = 'all';
+let currentPage = 'newspaper';
+
+function todayStr() { return new Date().toISOString().split('T')[0]; }
+
+// ===== ページ切り替え =====
+function showPage(page, btn) {
+  currentPage = page;
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.page-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  btn.classList.add('active');
 }
+
+// ===== 新聞 =====
+function save() { localStorage.setItem('asahiWeekly', JSON.stringify(editions)); }
 
 function openModal() {
   document.getElementById('inputDate').value = todayStr();
@@ -468,19 +419,11 @@ function openModal() {
   document.getElementById('modalOverlay').classList.add('show');
   document.body.style.overflow = 'hidden';
 }
-
 function closeModal() {
   document.getElementById('modalOverlay').classList.remove('show');
   document.body.style.overflow = '';
 }
-
-function closeBg(e) {
-  if (e.target === document.getElementById('modalOverlay')) closeModal();
-}
-
-function save() {
-  localStorage.setItem('asahiWeekly', JSON.stringify(editions));
-}
+function closeBg(e) { if (e.target === document.getElementById('modalOverlay')) closeModal(); }
 
 function addEdition() {
   const date = document.getElementById('inputDate').value;
@@ -494,8 +437,7 @@ function addEdition() {
 function toggleRead(id) {
   const e = editions.find(e => e.id === id);
   if (!e) return;
-  e.read = !e.read;
-  e.readAt = e.read ? todayStr() : null;
+  e.read = !e.read; e.readAt = e.read ? todayStr() : null;
   save(); render();
 }
 
@@ -508,10 +450,7 @@ function deleteEdition(id) {
 function toggleMemo(id) {
   const wrap = document.getElementById('memoWrap_' + id);
   const show = wrap.classList.toggle('show');
-  if (show) {
-    const e = editions.find(e => e.id === id);
-    document.getElementById('memoField_' + id).value = e.memo || '';
-  }
+  if (show) { document.getElementById('memoField_' + id).value = (editions.find(e => e.id === id) || {}).memo || ''; }
 }
 
 function saveMemo(id) {
@@ -524,8 +463,7 @@ function saveMemo(id) {
 function setFilter(f, btn) {
   currentFilter = f;
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-  render();
+  btn.classList.add('active'); render();
 }
 
 function daysSince(dateStr) {
@@ -536,17 +474,11 @@ function daysSince(dateStr) {
 
 function formatDate(dateStr) {
   const d = new Date(dateStr + 'T00:00:00');
-  return {
-    day: d.getDate(),
-    month: d.toLocaleString('en', { month: 'short' }).toUpperCase(),
-    year: d.getFullYear()
-  };
+  return { day: d.getDate(), month: d.toLocaleString('en', { month: 'short' }).toUpperCase(), year: d.getFullYear() };
 }
 
 function esc(str) {
-  return String(str||'')
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 function render() {
@@ -564,12 +496,9 @@ function render() {
   if (oldUnread.length > 0) {
     alertBar.textContent = `⚠ ${oldUnread.length}冊が届いてから7日以上未読です`;
     alertBar.classList.add('show');
-  } else {
-    alertBar.classList.remove('show');
-  }
+  } else { alertBar.classList.remove('show'); }
 
   const list = document.getElementById('editionsList');
-
   if (filtered.length === 0) {
     list.innerHTML = `<div class="empty-state"><p>該当する号がありません</p><small>${currentFilter === 'unread' ? '全部読んだ！' : '＋ ボタンで登録してください'}</small></div>`;
     return;
@@ -583,13 +512,9 @@ function render() {
       if (days >= 7)      badge = `<span class="days-badge urgent">${days}日未読</span>`;
       else if (days >= 3) badge = `<span class="days-badge warning">${days}日未読</span>`;
       else                badge = `<span class="days-badge fresh">${days === 0 ? '今日届いた' : days + '日前'}</span>`;
-    } else {
-      badge = `<span class="days-badge done">読了 ${e.readAt || ''}</span>`;
-    }
+    } else { badge = `<span class="days-badge done">読了 ${e.readAt || ''}</span>`; }
 
-    const memoHtml = e.memo
-      ? `<div class="memo-text">${esc(e.memo)}</div>`
-      : `<div class="memo-empty">メモなし — タップして追加</div>`;
+    const memoHtml = e.memo ? `<div class="memo-text">${esc(e.memo)}</div>` : `<div class="memo-empty">メモなし — タップして追加</div>`;
 
     return `
       <div class="edition-card ${e.read ? 'read' : 'unread'}">
@@ -624,7 +549,75 @@ function render() {
   }).join('');
 }
 
+// ===== 単語帳 =====
+function saveVocab() { localStorage.setItem('asahiVocab', JSON.stringify(vocab)); }
+
+function openVocabModal() {
+  document.getElementById('inputEn').value = '';
+  document.getElementById('inputJa').value = '';
+  document.getElementById('vocabModalOverlay').classList.add('show');
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => document.getElementById('inputEn').focus(), 100);
+}
+function closeVocabModal() {
+  document.getElementById('vocabModalOverlay').classList.remove('show');
+  document.body.style.overflow = '';
+}
+function closeVocabBg(e) { if (e.target === document.getElementById('vocabModalOverlay')) closeVocabModal(); }
+
+function addVocab() {
+  const en = document.getElementById('inputEn').value.trim();
+  const ja = document.getElementById('inputJa').value.trim();
+  if (!en || !ja) { alert('英語と日本語を両方入力してください'); return; }
+  vocab.unshift({ id: Date.now(), en, ja, date: todayStr() });
+  saveVocab(); closeVocabModal(); renderVocab();
+}
+
+function deleteVocab(id) {
+  if (!confirm('この単語を削除しますか？')) return;
+  vocab = vocab.filter(v => v.id !== id);
+  saveVocab(); renderVocab();
+}
+
+function renderVocab() {
+  const query = (document.getElementById('vocabSearch').value || '').toLowerCase();
+  const filtered = query
+    ? vocab.filter(v => v.en.toLowerCase().includes(query) || v.ja.includes(query))
+    : vocab;
+
+  const today = todayStr();
+  const weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate() - 7);
+  const weekAgoStr = weekAgo.toISOString().split('T')[0];
+
+  document.getElementById('vocabTotal').textContent = vocab.length;
+  document.getElementById('vocabToday').textContent = vocab.filter(v => v.date === today).length;
+  document.getElementById('vocabWeek').textContent = vocab.filter(v => v.date >= weekAgoStr).length;
+
+  const list = document.getElementById('vocabList');
+  if (filtered.length === 0) {
+    list.innerHTML = `<div class="empty-state"><p>${query ? '該当する単語がありません' : '単語がまだありません'}</p><small>${query ? '' : '＋ ボタンで追加してください'}</small></div>`;
+    return;
+  }
+
+  list.innerHTML = filtered.map(v => `
+    <div class="vocab-card">
+      <div class="vocab-body">
+        <div class="vocab-en">${esc(v.en)}</div>
+        <div class="vocab-ja">${esc(v.ja)}</div>
+        <div class="vocab-date">${v.date}</div>
+      </div>
+      <button class="vocab-del" onclick="deleteVocab(${v.id})">✕</button>
+    </div>
+  `).join('');
+}
+
+// Enterキーで単語登録
+document.getElementById('inputJa').addEventListener('keydown', e => {
+  if (e.key === 'Enter') addVocab();
+});
+
 render();
+renderVocab();
 </script>
 </body>
 </html>
