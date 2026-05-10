@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Asahi Weekly Tracker</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Serif+4:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
-<style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
 :root {
   --ink: #1a1209;
   --paper: #f5f0e8;
@@ -618,6 +619,148 @@ document.getElementById('inputJa').addEventListener('keydown', e => {
 
 render();
 renderVocab();
+</script>
+  <div id="auth-btn-area" style="position:fixed;bottom:24px;left:20px;z-index:999;">
+  <button onclick="toggleAuthModal()" id="auth-toggle-btn" style="padding:8px 16px;background:#b5451b;color:white;border:none;border-radius:4px;cursor:pointer;font-size:0.8rem;font-family:inherit;">ログイン / 登録</button>
+  <div id="user-info" style="display:none;align-items:center;gap:8px;background:#1a1209;padding:8px 12px;border-radius:4px;border:1px solid #d4c9b0;">
+    <span id="user-email-display" style="font-size:0.75rem;color:#f5f0e8;"></span>
+    <button onclick="signOut()" style="padding:3px 10px;background:#b5451b;color:white;border:none;border-radius:3px;cursor:pointer;font-size:0.75rem;">ログアウト</button>
+  </div>
+</div>
+
+<div id="auth-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);z-index:1000;justify-content:center;align-items:center;">
+  <div style="background:#f5f0e8;border-top:4px solid #b5451b;padding:28px;width:320px;max-width:90vw;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+      <h3 style="font-family:'Playfair Display',serif;font-size:1.1rem;">ログイン / 新規登録</h3>
+      <button onclick="toggleAuthModal()" style="background:none;border:none;font-size:1.4rem;cursor:pointer;color:#7a6e5f;">✕</button>
+    </div>
+    <input id="email-input" type="email" placeholder="メールアドレス" style="width:100%;padding:12px 14px;margin-bottom:10px;border:1px solid #d4c9b0;background:white;font-family:inherit;font-size:1rem;box-sizing:border-box;">
+    <input id="password-input" type="password" placeholder="パスワード（6文字以上）" style="width:100%;padding:12px 14px;margin-bottom:14px;border:1px solid #d4c9b0;background:white;font-family:inherit;font-size:1rem;box-sizing:border-box;">
+    <button onclick="signUp()" style="width:100%;padding:12px;margin-bottom:8px;background:#b5451b;color:white;border:none;font-family:inherit;font-size:0.9rem;font-weight:700;cursor:pointer;">新規登録</button>
+    <button onclick="signIn()" style="width:100%;padding:12px;margin-bottom:8px;background:#3d7a3d;color:white;border:none;font-family:inherit;font-size:0.9rem;font-weight:700;cursor:pointer;">メールでログイン</button>
+    <button onclick="signInWithGoogle()" style="width:100%;padding:12px;background:#4285f4;color:white;border:none;font-family:inherit;font-size:0.9rem;font-weight:700;cursor:pointer;">Googleでログイン</button>
+    <p id="auth-message" style="color:#b5451b;font-size:0.8rem;margin-top:10px;min-height:1em;"></p>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://fadtttgkzyryzjakvrva.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_JVfGO7BS_IhZnHhLRQZlDw_CdCbwIx6';
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+function toggleAuthModal() {
+  const modal = document.getElementById('auth-modal');
+  modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
+}
+
+sb.auth.onAuthStateChange(async (event, session) => {
+  const toggleBtn = document.getElementById('auth-toggle-btn');
+  const userInfo = document.getElementById('user-info');
+  if (session) {
+    toggleBtn.style.display = 'none';
+    userInfo.style.display = 'flex';
+    document.getElementById('user-email-display').textContent = session.user.email;
+    document.getElementById('auth-modal').style.display = 'none';
+    await loadFromSupabase();
+  } else {
+    toggleBtn.style.display = 'block';
+    userInfo.style.display = 'none';
+  }
+});
+
+async function signUp() {
+  const email = document.getElementById('email-input').value;
+  const password = document.getElementById('password-input').value;
+  const { error } = await sb.auth.signUp({ email, password });
+  document.getElementById('auth-message').textContent =
+    error ? error.message : '確認メールを送信しました。';
+}
+
+async function signIn() {
+  const email = document.getElementById('email-input').value;
+  const password = document.getElementById('password-input').value;
+  const { error } = await sb.auth.signInWithPassword({ email, password });
+  document.getElementById('auth-message').textContent = error ? error.message : '';
+}
+
+async function signInWithGoogle() {
+  const { error } = await sb.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: 'https://enube1115.github.io/asahi-weekly/' }
+  });
+  if (error) document.getElementById('auth-message').textContent = error.message;
+}
+
+async function signOut() {
+  await sb.auth.signOut();
+}
+
+async function loadFromSupabase() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) return;
+  const uid = session.user.id;
+
+  const { data: edData } = await sb.from('editions').select('*').eq('user_id', uid).order('created_at', { ascending: false });
+  if (edData && edData.length > 0) {
+    editions = edData.map(r => ({
+      id: r.id, date: r.date, label: r.label || '', memo: r.memo || '',
+      read: r.read || false, readAt: r.read_at || null, _sbId: r.id
+    }));
+    render();
+  }
+
+  const { data: voData } = await sb.from('vocab').select('*').eq('user_id', uid).order('created_at', { ascending: false });
+  if (voData && voData.length > 0) {
+    vocab = voData.map(r => ({
+      id: r.id, en: r.en, ja: r.ja, date: r.date, _sbId: r.id
+    }));
+    renderVocab();
+  }
+}
+
+async function saveEditionToSupabase(edition) {
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) return null;
+  const { data, error } = await sb.from('editions').insert({
+    user_id: session.user.id,
+    date: edition.date,
+    label: edition.label,
+    memo: edition.memo,
+    read: edition.read,
+    read_at: edition.readAt
+  }).select().single();
+  return data ? data.id : null;
+}
+
+async function updateEditionInSupabase(edition) {
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) return;
+  await sb.from('editions').update({
+    read: edition.read, read_at: edition.readAt, memo: edition.memo
+  }).eq('id', edition.id).eq('user_id', session.user.id);
+}
+
+async function deleteEditionFromSupabase(id) {
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) return;
+  await sb.from('editions').delete().eq('id', id).eq('user_id', session.user.id);
+}
+
+async function saveVocabToSupabase(v) {
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) return null;
+  const { data } = await sb.from('vocab').insert({
+    user_id: session.user.id, en: v.en, ja: v.ja, date: v.date
+  }).select().single();
+  return data ? data.id : null;
+}
+
+async function deleteVocabFromSupabase(id) {
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) return;
+  await sb.from('vocab').delete().eq('id', id).eq('user_id', session.user.id);
+}
 </script>
 </body>
 </html>
